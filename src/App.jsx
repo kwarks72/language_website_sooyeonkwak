@@ -1702,6 +1702,27 @@ function VocabCardCatalog({ session, isAdmin }) {
     );
   };
 
+  // 슬라이드에서 단어를 2번 읽고, 이어서 예문을 1번 읽어요 (번역은 읽지 않아요).
+  const speakWordThenExample = (word, example, onDone) => {
+    speakTwice(word, () => {
+      const cleanExample = sanitizeForSpeech(example);
+      if (!cleanExample || !("speechSynthesis" in window)) {
+        onDone && onDone();
+        return;
+      }
+      setTimeout(() => {
+        const voice = pickVoice("en-US");
+        const u = new SpeechSynthesisUtterance(cleanExample);
+        u.lang = "en-US";
+        if (voice) u.voice = voice;
+        u.rate = 0.92;
+        u.onend = () => onDone && onDone();
+        u.onerror = () => onDone && onDone();
+        window.speechSynthesis.speak(u);
+      }, 400);
+    });
+  };
+
   const allTags = [...new Set(words.flatMap((w) => parseTags(w.tags)))];
 
   const filtered = words.filter((w) => {
@@ -2474,7 +2495,7 @@ function VocabCardCatalog({ session, isAdmin }) {
           title="오늘의 복습"
           items={[...words].sort(() => Math.random() - 0.5).slice(0, 5)}
           onClose={() => setShowReview(false)}
-          onShow={(w, done) => speakTwice(w.word, done)}
+          onShow={(w, done) => speakWordThenExample(w.word, w.example, done)}
           renderItem={(w) => (
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -2502,7 +2523,7 @@ function VocabCardCatalog({ session, isAdmin }) {
           title="낱말장 슬라이드"
           items={words}
           onClose={() => setShowSlides(false)}
-          onShow={(w, done) => speakTwice(w.word, done)}
+          onShow={(w, done) => speakWordThenExample(w.word, w.example, done)}
           renderItem={(w) => (
             <>
               <span className="card-number">No. {String(words.findIndex((x) => x.id === w.id) + 1).padStart(3, "0")}</span>
@@ -2950,6 +2971,27 @@ function WordCardsPage({ config, session, isAdmin }) {
     );
   };
 
+  // 슬라이드에서 단어를 2번 읽고, 이어서 예시 문장을 그 나라 언어로 1번 읽어요 (번역은 읽지 않아요).
+  const speakWordThenExample = (word, example, onDone) => {
+    speakTwice(word, () => {
+      const cleanExample = sanitizeForSpeech(example);
+      if (!cleanExample || !("speechSynthesis" in window)) {
+        onDone && onDone();
+        return;
+      }
+      setTimeout(() => {
+        const voice = pickVoice(ttsLang);
+        const u = new SpeechSynthesisUtterance(cleanExample);
+        u.lang = ttsLang;
+        if (voice) u.voice = voice;
+        u.rate = 0.92;
+        u.onend = () => onDone && onDone();
+        u.onerror = () => onDone && onDone();
+        window.speechSynthesis.speak(u);
+      }, 400);
+    });
+  };
+
   const filtered = words.filter((w) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
@@ -3347,7 +3389,7 @@ function WordCardsPage({ config, session, isAdmin }) {
           title="오늘의 복습"
           items={[...words].sort(() => Math.random() - 0.5).slice(0, 5)}
           onClose={() => setShowReview(false)}
-          onShow={(w, done) => speakTwice(w.word, done)}
+          onShow={(w, done) => speakWordThenExample(w.word, w.example, done)}
           renderItem={(w) => (
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
