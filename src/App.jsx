@@ -31,8 +31,6 @@ import {
 const SUPABASE_URL = "https://tbkcztqcnpvboqlihilo.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRia2N6dHFjbnB2Ym9xbGloaWxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNjIxMDksImV4cCI6MjEwMTgzODEwOX0.qUG9NckDYud-3H6VjAsV4iSC2AGcsCM_X8emkqTxG3c";
 
-// 관리자로 인식할 이메일 주소예요. 본인 계정 이메일로 바꿔주세요.
-// (관리자 메뉴는 이 이메일로 로그인했을 때만 보이고 접근할 수 있어요.)
 const ADMIN_EMAIL = "sooyeon0702@naver.com";
 
 const isSupabaseConfigured = () =>
@@ -61,19 +59,6 @@ async function supabaseRequest(table, { method = "GET", query = "", body, access
   return res.json();
 }
 
-// ───────────────────────────────────────────────────────────
-// Supabase Auth (이메일/비밀번호 회원가입 · 로그인 · 로그아웃)
-// Supabase 대시보드 → Authentication → Providers 에서 Email 로그인이
-// 켜져 있어야 동작해요 (기본값으로 켜져 있음).
-// "Confirm email" 옵션이 켜져 있으면 가입 후 이메일 인증을 완료해야
-// 로그인할 수 있어요. 테스트 중에는 Authentication → Settings에서
-// 꺼두면 바로 로그인할 수 있어요.
-// ───────────────────────────────────────────────────────────
-// ───────────────────────────────────────────────────────────
-// 가벼운 URL 라우팅 (react-router 없이 History API만 사용)
-// 새로고침해도 같은 페이지가 유지되고, 특정 페이지 링크를
-// 카카오톡/문자로 공유할 수 있게 해줘요.
-// ───────────────────────────────────────────────────────────
 const PAGE_PATHS = {
   home: "/",
   search: "/search",
@@ -107,7 +92,6 @@ function getPageFromLocation() {
   return PATH_TO_PAGE[path] || "home";
 }
 
-// 파비콘을 코드로 직접 그려서 넣어요 (public 폴더 파일 없이도 동작해요).
 function setAppFavicon() {
   try {
     const svg =
@@ -122,9 +106,7 @@ function setAppFavicon() {
       document.head.appendChild(link);
     }
     link.href = "data:image/svg+xml," + svg;
-  } catch (e) {
-    // 파비콘 설정이 실패해도 사이트 기능엔 영향 없으니 조용히 넘어가요.
-  }
+  } catch (e) {}
 }
 
 const AUTH_SESSION_KEY = "engstudy_auth_session";
@@ -157,13 +139,10 @@ async function supabaseSignIn(email, password) {
   return supabaseAuthRequest("token?grant_type=password", { email, password });
 }
 
-// 비밀번호 재설정 이메일 발송 — 이 메일의 링크를 클릭하면
-// #access_token=...&type=recovery 형태로 사이트에 돌아와요.
 async function supabaseRequestPasswordReset(email) {
   return supabaseAuthRequest(`recover?redirect_to=${encodeURIComponent(window.location.origin)}`, { email });
 }
 
-// 복구 링크로 들어온 access_token으로 실제 비밀번호를 변경해요.
 async function supabaseUpdatePassword(accessToken, newPassword) {
   if (!isSupabaseConfigured()) throw new Error("SUPABASE_NOT_CONFIGURED");
   const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
@@ -192,9 +171,7 @@ async function supabaseSignOut(accessToken) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-  } catch (e) {
-    // 네트워크 오류가 나도 로컬 세션은 지우면 되므로 무시해요.
-  }
+  } catch (e) {}
 }
 
 function loadStoredSession() {
@@ -213,17 +190,9 @@ function storeSession(session) {
     } else {
       window.localStorage.removeItem(AUTH_SESSION_KEY);
     }
-  } catch (e) {
-    // 저장 공간을 못 쓰는 환경이면 그냥 넘어가요 (로그인 유지만 안 될 뿐).
-  }
+  } catch (e) {}
 }
 
-// ───────────────────────────────────────────────────────────
-// 연속 학습일(스트릭) — 브라우저 localStorage 기반으로 간단하게 추적해요.
-// 계정에 저장되는 게 아니라 "이 브라우저에서 방문한 날짜" 기록이라
-// 기기를 바꾸면 초기화돼요. 정확한 계정별 기록이 필요해지면
-// Supabase 테이블로 옮기는 게 다음 단계예요.
-// ───────────────────────────────────────────────────────────
 const STREAK_KEY = "engstudy_streak_log";
 
 function logStudyVisit() {
@@ -236,9 +205,7 @@ function logStudyVisit() {
       if (dates.length > 400) dates.shift();
       window.localStorage.setItem(STREAK_KEY, JSON.stringify(dates));
     }
-  } catch (e) {
-    // 저장 공간을 못 쓰는 환경이면 그냥 넘어가요.
-  }
+  } catch (e) {}
 }
 
 function getStreak() {
@@ -249,7 +216,6 @@ function getStreak() {
     const set = new Set(dates);
     let streak = 0;
     const d = new Date();
-    // 오늘 방문 기록이 없으면 "어제까지의 스트릭"을 보여줘요 (아직 오늘 안 왔을 뿐이니까).
     const todayKey = d.toISOString().slice(0, 10);
     if (!set.has(todayKey)) d.setDate(d.getDate() - 1);
     while (true) {
@@ -267,6 +233,61 @@ function getStreak() {
   }
 }
 
+// ───────────────────────────────────────────────────────────
+// 발음(TTS) 음성 품질 개선
+// 브라우저 기본 SpeechSynthesisUtterance는 lang만 지정하면
+// 시스템에 깔린 아무 음성(품질 낮은 로컬 음성 포함)을 골라버려요.
+// 여기서는 사용 가능한 음성 목록 중 "자연스러운" 온라인/고품질 음성을
+// 우선적으로 찾아서 명시적으로 지정해줘요.
+// ───────────────────────────────────────────────────────────
+let cachedVoices = [];
+
+function refreshVoiceCache() {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const list = window.speechSynthesis.getVoices();
+  if (list && list.length > 0) cachedVoices = list;
+}
+
+if (typeof window !== "undefined" && "speechSynthesis" in window) {
+  refreshVoiceCache();
+  window.speechSynthesis.onvoiceschanged = refreshVoiceCache;
+}
+
+// 언어 코드(예: "en-US", "ja-JP", "es-ES")에 맞는 최선의 음성을 찾아줘요.
+function pickVoice(lang) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+  if (cachedVoices.length === 0) refreshVoiceCache();
+  if (cachedVoices.length === 0) return null;
+
+  const langPrefix = lang.split("-")[0].toLowerCase();
+  const candidates = cachedVoices.filter(
+    (v) => v.lang && v.lang.toLowerCase().startsWith(langPrefix)
+  );
+  if (candidates.length === 0) return null;
+
+  // 품질 좋은 순서로 우선순위를 매겨요:
+  // 1) 이름에 Natural/Neural/Online이 들어간 고품질 음성 (엣지/윈도우)
+  // 2) Google 음성 (크롬)
+  // 3) 지역까지 정확히 일치하는 음성 (예: en-US)
+  // 4) 그 외 해당 언어의 아무 음성
+  const byPattern = (re) => candidates.find((v) => re.test(v.name));
+  return (
+    byPattern(/natural|neural|online/i) ||
+    byPattern(/google/i) ||
+    candidates.find((v) => v.lang.toLowerCase() === lang.toLowerCase()) ||
+    candidates[0]
+  );
+}
+
+// 단어에 "make a mockery of ~" 처럼 빈칸 표시용 물결(~)이 들어있는 경우가 있는데,
+// TTS가 이걸 "틸다"라고 그대로 읽어버려요. 발음 전에 이런 기호를 제거해줘요.
+function sanitizeForSpeech(text) {
+  if (!text) return "";
+  return text
+    .replace(/~/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
 
 function SupabaseSetupNotice() {
   return (
@@ -307,7 +328,6 @@ function SupabaseSetupNotice() {
     </div>
   );
 }
-
 
 function AuthModal({ initialMode = "login", onClose, onAuthSuccess }) {
   const [mode, setMode] = useState(initialMode); // "login" | "signup"
@@ -526,7 +546,6 @@ function AuthModal({ initialMode = "login", onClose, onAuthSuccess }) {
   );
 }
 
-// ── 전체 언어 통합 검색 페이지 ──
 const SEARCH_SOURCES = [
   { table: "vocab_words", lang: "영어", code: "EN", color: "#C22E4F", page: "vocab" },
   { table: "japanese_words", lang: "일본어", code: "JA", color: "#3F63C4", page: "jaWords" },
@@ -628,8 +647,6 @@ function GlobalSearchPage({ setPage }) {
   );
 }
 
-// ── 개인정보처리방침 페이지 ──
-// ── 비밀번호 재설정 링크로 들어왔을 때 보여주는 화면 ──
 function ResetPasswordPage({ accessToken, onDone }) {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -718,9 +735,7 @@ function PrivacyPage({ setPage }) {
         <span className="privacy-back" role="button" tabIndex={0} onClick={() => setPage("home")}>← 홈으로</span>
         <h1>개인정보처리방침</h1>
         <div className="updated">시행일: 2026년 8월</div>
-
         <p>모두의 언어방(이하 "사이트")은 이용자의 개인정보를 중요하게 생각하며, 관련 법령을 준수합니다.</p>
-
         <h2>1. 수집하는 개인정보 항목</h2>
         <table className="privacy-table">
           <tbody>
@@ -728,19 +743,14 @@ function PrivacyPage({ setPage }) {
             <tr><th>서비스 이용 시</th><td>학습 기록(즐겨찾기), 접속 로그</td></tr>
           </tbody>
         </table>
-
         <h2>2. 개인정보 수집 및 이용 목적</h2>
         <p>회원 식별 및 로그인 유지, 학습 기록 저장, 부정 이용 방지를 위해 사용합니다.</p>
-
         <h2>3. 보유 기간</h2>
         <p>회원 탈퇴 시 지체 없이 파기합니다.</p>
-
         <h2>4. 제3자 제공</h2>
         <p>이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다.</p>
-
         <h2>5. 이용자의 권리</h2>
         <p>언제든지 본인의 개인정보를 조회·수정할 수 있으며, 탈퇴를 통해 삭제를 요청할 수 있습니다.</p>
-
         <h2>6. 문의</h2>
         <p>개인정보 관련 문의는 운영자 이메일로 연락해주세요.</p>
       </div>
@@ -1117,7 +1127,6 @@ function NavBar({ page, setPage, session, isAdmin, onLoginClick, onSignupClick, 
   );
 }
 
-// ── 언어별 섹션 정의 (거대한 문자 타이포그래피 아트로 정체성 표현) ──
 const HOME_LANG_ROWS = [
   {
     lang: "en",
@@ -1290,7 +1299,6 @@ function Home({ setPage }) {
   );
 }
 
-// 초기 상태: 저장된 단어가 없습니다. 사용자가 직접 추가한 단어만 쌓입니다.
 const DEFAULT_WORDS = [];
 
 const EMPTY_FORM = {
@@ -1324,7 +1332,6 @@ function parseTags(tagsStr) {
     .filter(Boolean);
 }
 
-// ── 4지선다 퀴즈 모달 (단어 카드 공용) ──
 function buildQuizQuestions(items, count = 5) {
   const pool = items.filter((i) => i.word && i.meaning);
   if (pool.length < 4) return [];
@@ -1382,7 +1389,7 @@ function QuizModal({ items, onClose }) {
         .quiz-close { background: none; border: none; color: #8a6f45; cursor: pointer; padding: 4px; border-radius: 4px; }
         .quiz-close:hover { background: rgba(0,0,0,0.06); }
         .quiz-progress { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8a6f45; }
-        .quiz-word { font-family: 'Fraunces', serif; font-weight: 700; font-size: 34px; color: #221C12; text-align: center; margin: 6px 0 4px; }
+        .quiz-word { font-family: 'Inter', -apple-system, sans-serif; font-weight: 800; letter-spacing: -0.01em; font-size: 34px; color: #221C12; text-align: center; margin: 6px 0 4px; }
         .quiz-options { display: flex; flex-direction: column; gap: 8px; }
         .quiz-option {
           text-align: left; padding: 12px 14px; border-radius: 8px; border: 1px solid #F0E6C8;
@@ -1443,7 +1450,6 @@ function QuizModal({ items, onClose }) {
   );
 }
 
-// ── 눈에 잘 띄는 저장 성공/실패 알림 (여러 페이지에서 공용으로 사용) ──
 function Toast({ message, kind = "error", onDismiss }) {
   useEffect(() => {
     const t = setTimeout(onDismiss, 3200);
@@ -1474,12 +1480,11 @@ function Toast({ message, kind = "error", onDismiss }) {
   );
 }
 
-// ── 전체 카드를 한 장씩 넘겨보는 슬라이드 모달 (낱말장 / 문장 카드 공용) ──
-function SlideshowModal({ title, items, onClose, renderItem }) {
-
-
+function SlideshowModal({ title, items, onClose, renderItem, onShow }) {
   const [index, setIndex] = useState(0);
   const total = items.length;
+  const safeIndex = total > 0 ? Math.min(index, total - 1) : 0;
+  const current = total > 0 ? items[safeIndex] : null;
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -1491,9 +1496,28 @@ function SlideshowModal({ title, items, onClose, renderItem }) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [total, onClose]);
 
+  // 카드가 바뀔 때마다(처음 열릴 때 포함) 자동으로 발음을 읽어주고,
+  // 다 읽으면 잠깐 쉬었다가 자동으로 다음 카드로 넘어가요 (마지막 카드에서는 멈춤).
+  // 훅은 조건부 return보다 반드시 먼저 호출되어야 해서, current가 없을 땐 그냥 아무것도 안 해요.
+  useEffect(() => {
+    let cancelled = false;
+    if (onShow && current) {
+      onShow(current, () => {
+        if (cancelled) return;
+        setTimeout(() => {
+          if (cancelled) return;
+          setIndex((i) => (i + 1 < total ? i + 1 : i));
+        }, 900);
+      });
+    }
+    return () => {
+      cancelled = true;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeIndex, current]);
+
   if (total === 0) return null;
-  const safeIndex = Math.min(index, total - 1);
-  const current = items[safeIndex];
 
   return (
     <div className="slideshow-overlay" onClick={onClose}>
@@ -1636,14 +1660,46 @@ function VocabCardCatalog({ session, isAdmin }) {
   const speak = (text, id) => {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(sanitizeForSpeech(text));
     utter.lang = "en-US";
-    utter.rate = 0.85;
+    const voice = pickVoice("en-US");
+    if (voice) utter.voice = voice;
+    utter.rate = 0.92;
     utter.pitch = 1;
     utter.onstart = () => setSpeakingId(id);
     utter.onend = () => setSpeakingId(null);
     utter.onerror = () => setSpeakingId(null);
     window.speechSynthesis.speak(utter);
+  };
+
+  // 슬라이드 카드가 나타날 때 자동으로 2번 읽어주고, 끝나면 onDone을 호출해요.
+  const speakTwice = (text, onDone) => {
+    const clean = sanitizeForSpeech(text);
+    if (!clean || !("speechSynthesis" in window)) {
+      onDone && onDone();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const voice = pickVoice("en-US");
+    const makeUtter = (onEnd) => {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = "en-US";
+      if (voice) u.voice = voice;
+      u.rate = 0.92;
+      u.pitch = 1;
+      u.onend = onEnd;
+      u.onerror = onEnd;
+      return u;
+    };
+    window.speechSynthesis.speak(
+      makeUtter(() => {
+        setTimeout(() => {
+          window.speechSynthesis.speak(makeUtter(() => {
+            onDone && onDone();
+          }));
+        }, 400);
+      })
+    );
   };
 
   const allTags = [...new Set(words.flatMap((w) => parseTags(w.tags)))];
@@ -1794,7 +1850,7 @@ function VocabCardCatalog({ session, isAdmin }) {
   return (
     <div className="shell">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
         * { box-sizing: border-box; }
 
@@ -2128,9 +2184,10 @@ function VocabCardCatalog({ session, isAdmin }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-family: 'Fraunces', serif;
-          font-weight: 700;
-          font-size: 17px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+          font-weight: 800;
+          font-size: 16px;
+          letter-spacing: -0.01em;
           color: #fff8ec;
           box-shadow: 2px 2px 6px rgba(0,0,0,0.35);
           z-index: 2;
@@ -2160,11 +2217,12 @@ function VocabCardCatalog({ session, isAdmin }) {
         }
 
         .word-display {
-          font-family: 'Fraunces', serif;
-          font-weight: 700;
+          font-family: 'Inter', -apple-system, sans-serif;
+          font-weight: 800;
           font-size: 42px;
           color: #2a1c0e;
           line-height: 1;
+          letter-spacing: -0.01em;
         }
 
         .pos-tag {
@@ -2234,7 +2292,12 @@ function VocabCardCatalog({ session, isAdmin }) {
           margin: 16px 0;
         }
 
-        .meaning-block { margin-bottom: 4px; }
+        .meaning-block {
+          margin-bottom: 4px;
+          width: 100%;
+          text-align: center;
+          align-self: center;
+        }
         .section-label {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10.5px;
@@ -2411,10 +2474,11 @@ function VocabCardCatalog({ session, isAdmin }) {
           title="오늘의 복습"
           items={[...words].sort(() => Math.random() - 0.5).slice(0, 5)}
           onClose={() => setShowReview(false)}
+          onShow={(w, done) => speakTwice(w.word, done)}
           renderItem={(w) => (
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <strong style={{ fontFamily: "'Fraunces', serif", fontSize: 26, color: "#2a1c0e" }}>{w.word}</strong>
+                <strong style={{ fontFamily: "'Inter', -apple-system, sans-serif", fontWeight: 800, fontSize: 26, letterSpacing: "-0.01em", color: "#2a1c0e" }}>{w.word}</strong>
                 <button
                   className="speaker-btn"
                   onClick={() => speak(w.word, w.id)}
@@ -2438,11 +2502,12 @@ function VocabCardCatalog({ session, isAdmin }) {
           title="낱말장 슬라이드"
           items={words}
           onClose={() => setShowSlides(false)}
+          onShow={(w, done) => speakTwice(w.word, done)}
           renderItem={(w) => (
             <>
               <span className="card-number">No. {String(words.findIndex((x) => x.id === w.id) + 1).padStart(3, "0")}</span>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <strong style={{ fontFamily: "'Fraunces', serif", fontSize: 26, color: "#2a1c0e" }}>{w.word}</strong>
+                <strong style={{ fontFamily: "'Inter', -apple-system, sans-serif", fontWeight: 800, fontSize: 26, letterSpacing: "-0.01em", color: "#2a1c0e" }}>{w.word}</strong>
                 <button
                   className="speaker-btn"
                   onClick={() => speak(w.word, w.id)}
@@ -2787,7 +2852,6 @@ function VocabCardCatalog({ session, isAdmin }) {
   );
 }
 
-
 function mapReadingWordRow(r) {
   return {
     id: r.id,
@@ -2803,7 +2867,6 @@ function mapReadingWordRow(r) {
 const EMPTY_READING_WORD_FORM = { word: "", reading: "", meaning: "", example: "", example_ko: "" };
 const EMPTY_SENTENCE_FORM = { sentence: "", translation: "" };
 
-// ── 단어 카드 페이지 (일본어/스페인어 등에서 공용으로 재사용) ──
 function WordCardsPage({ config, session, isAdmin }) {
   const {
     table, ttsLang, icon: Icon, title, subtitle,
@@ -2847,13 +2910,44 @@ function WordCardsPage({ config, session, isAdmin }) {
   const speak = (text, id) => {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(sanitizeForSpeech(text));
     utter.lang = ttsLang;
-    utter.rate = 0.85;
+    const voice = pickVoice(ttsLang);
+    if (voice) utter.voice = voice;
+    utter.rate = 0.92;
     utter.onstart = () => setSpeakingId(id);
     utter.onend = () => setSpeakingId(null);
     utter.onerror = () => setSpeakingId(null);
     window.speechSynthesis.speak(utter);
+  };
+
+  // 슬라이드 카드가 나타날 때 자동으로 2번 읽어주고, 끝나면 onDone을 호출해요.
+  const speakTwice = (text, onDone) => {
+    const clean = sanitizeForSpeech(text);
+    if (!clean || !("speechSynthesis" in window)) {
+      onDone && onDone();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const voice = pickVoice(ttsLang);
+    const makeUtter = (onEnd) => {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = ttsLang;
+      if (voice) u.voice = voice;
+      u.rate = 0.92;
+      u.onend = onEnd;
+      u.onerror = onEnd;
+      return u;
+    };
+    window.speechSynthesis.speak(
+      makeUtter(() => {
+        setTimeout(() => {
+          window.speechSynthesis.speak(makeUtter(() => {
+            onDone && onDone();
+          }));
+        }, 400);
+      })
+    );
   };
 
   const filtered = words.filter((w) => {
@@ -3126,9 +3220,10 @@ function WordCardsPage({ config, session, isAdmin }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-family: 'Fraunces', serif;
-          font-weight: 700;
-          font-size: 17px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+          font-weight: 800;
+          font-size: 16px;
+          letter-spacing: -0.01em;
           color: #fff8ec;
           box-shadow: 2px 2px 6px rgba(0,0,0,0.35);
           z-index: 2;
@@ -3252,6 +3347,7 @@ function WordCardsPage({ config, session, isAdmin }) {
           title="오늘의 복습"
           items={[...words].sort(() => Math.random() - 0.5).slice(0, 5)}
           onClose={() => setShowReview(false)}
+          onShow={(w, done) => speakTwice(w.word, done)}
           renderItem={(w) => (
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -3459,7 +3555,6 @@ function WordCardsPage({ config, session, isAdmin }) {
   );
 }
 
-// ── 문장 연습 페이지 (일본어/스페인어 등에서 공용으로 재사용) ──
 function SentencePracticePage({ config, session, isAdmin }) {
   const { table, ttsLang, icon: Icon, title, subtitle, sentencePh, translationPh } = config;
 
@@ -3494,13 +3589,44 @@ function SentencePracticePage({ config, session, isAdmin }) {
   const speak = (text, id) => {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
+    const utter = new SpeechSynthesisUtterance(sanitizeForSpeech(text));
     utter.lang = ttsLang;
-    utter.rate = 0.85;
+    const voice = pickVoice(ttsLang);
+    if (voice) utter.voice = voice;
+    utter.rate = 0.92;
     utter.onstart = () => setSpeakingId(id);
     utter.onend = () => setSpeakingId(null);
     utter.onerror = () => setSpeakingId(null);
     window.speechSynthesis.speak(utter);
+  };
+
+  // 슬라이드 카드가 나타날 때 자동으로 2번 읽어주고, 끝나면 onDone을 호출해요.
+  const speakTwice = (text, onDone) => {
+    const clean = sanitizeForSpeech(text);
+    if (!clean || !("speechSynthesis" in window)) {
+      onDone && onDone();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const voice = pickVoice(ttsLang);
+    const makeUtter = (onEnd) => {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = ttsLang;
+      if (voice) u.voice = voice;
+      u.rate = 0.92;
+      u.onend = onEnd;
+      u.onerror = onEnd;
+      return u;
+    };
+    window.speechSynthesis.speak(
+      makeUtter(() => {
+        setTimeout(() => {
+          window.speechSynthesis.speak(makeUtter(() => {
+            onDone && onDone();
+          }));
+        }, 400);
+      })
+    );
   };
 
   const handleFormChange = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -3692,6 +3818,7 @@ function SentencePracticePage({ config, session, isAdmin }) {
           title="오늘의 복습"
           items={[...sentences].sort(() => Math.random() - 0.5).slice(0, 5)}
           onClose={() => setShowReview(false)}
+          onShow={(s, done) => speakTwice(s.sentence, done)}
           renderItem={(s) => (
             <>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -3715,6 +3842,7 @@ function SentencePracticePage({ config, session, isAdmin }) {
           title={`${title} 슬라이드`}
           items={sentences}
           onClose={() => setShowSlides(false)}
+          onShow={(s, done) => speakTwice(s.sentence, done)}
           renderItem={(s) => (
             <>
               <span className="card-number">No. {String(sentences.findIndex((x) => x.id === s.id) + 1).padStart(3, "0")}</span>
@@ -3825,7 +3953,6 @@ function SentencePracticePage({ config, session, isAdmin }) {
   );
 }
 
-// ── 언어별 페이지 (설정만 다르게 넣어서 위 공용 컴포넌트를 재사용) ──
 function EnglishSentencesPage({ session, isAdmin }) {
   return (
     <SentencePracticePage
@@ -3920,13 +4047,11 @@ function SpanishSentencesPage({ session, isAdmin }) {
   );
 }
 
-
 export default function App() {
   const [page, setPageState] = useState(getPageFromLocation);
   const [session, setSession] = useState(null);
-  const [authModalMode, setAuthModalMode] = useState(null); // null | "login" | "signup"
+  const [authModalMode, setAuthModalMode] = useState(null);
 
-  // 비밀번호 재설정 이메일 링크로 들어오면 #access_token=...&type=recovery 형태로 도착해요.
   const [recoveryToken, setRecoveryToken] = useState(() => {
     const hash = window.location.hash;
     if (hash.includes("type=recovery")) {
@@ -3941,8 +4066,6 @@ export default function App() {
     window.history.replaceState({}, "", PAGE_PATHS.home);
   };
 
-  // URL도 같이 바꿔주는 페이지 이동 함수 — 기존에 setPage(id)로 부르던 모든 곳이
-  // 코드 수정 없이 그대로 이 함수를 쓰게 돼요.
   const setPage = (id) => {
     setPageState(id);
     const path = PAGE_PATHS[id] || "/";
@@ -3951,14 +4074,12 @@ export default function App() {
     }
   };
 
-  // 브라우저 뒤로가기/앞으로가기 버튼 대응
   useEffect(() => {
     const onPopState = () => setPageState(getPageFromLocation());
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  // 파비콘 + 탭 제목
   useEffect(() => {
     setAppFavicon();
   }, []);
@@ -3978,7 +4099,6 @@ export default function App() {
     if (STUDY_PAGES.includes(page)) logStudyVisit();
   }, [page]);
 
-  // 관리자가 아닌 상태에서 admin 페이지로 남아있게 되면 홈으로 되돌려요.
   useEffect(() => {
     if (page === "admin" && !isAdmin) setPage("home");
   }, [page, isAdmin]);
@@ -4040,6 +4160,11 @@ export default function App() {
             개인정보처리방침
           </span>
           {" · "}© 모두의 언어방
+          <div style={{ marginTop: 8, fontSize: 11, color: "#9A8FB0", lineHeight: 1.6 }}>
+            본 사이트의 모든 콘텐츠(텍스트, 이미지, 디자인 등)의 저작권은 © 모두의 언어방에 있으며,<br />
+            무단 복제, 배포, 전재, 스크래핑 및 상업적 이용을 금지합니다.<br />
+            All content on this site is protected by copyright. Unauthorized copying, reproduction, or use is strictly prohibited.
+          </div>
         </footer>
       )}
     </div>
