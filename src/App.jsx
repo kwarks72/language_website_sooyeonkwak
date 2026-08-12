@@ -33,7 +33,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // 관리자로 인식할 이메일 주소예요. 본인 계정 이메일로 바꿔주세요.
 // (관리자 메뉴는 이 이메일로 로그인했을 때만 보이고 접근할 수 있어요.)
-const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com";
+const ADMIN_EMAIL = "sooyeon0702@naver.com";
 
 const isSupabaseConfigured = () =>
   !SUPABASE_URL.includes("YOUR_PROJECT_ID") &&
