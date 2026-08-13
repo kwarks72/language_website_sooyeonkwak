@@ -1553,7 +1553,7 @@ function SlideshowModal({ title, items, onClose, renderItem, onShow }) {
         .slideshow-card {
           flex: 1 1 auto; min-width: 0; min-height: 240px; background: #FFFFFF; border: 1px solid #F0E6C8;
           border-radius: 6px; padding: 24px 26px; box-shadow: 0 2px 0 rgba(0,0,0,0.15), 0 12px 26px rgba(0,0,0,0.3);
-          display: flex; flex-direction: column; justify-content: center; gap: 8px;
+          display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 8px;
         }
         .slideshow-footer { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .slideshow-count { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8a6f45; }
@@ -2167,7 +2167,7 @@ function VocabCardCatalog({ session, isAdmin }) {
           flex-direction: column;
           justify-content: center;
         }
-        .flashcard-front { align-items: flex-start; }
+        .flashcard-front { align-items: center; text-align: center; }
         .flashcard-back {
           transform: rotateY(180deg);
           justify-content: flex-start;
@@ -2232,6 +2232,7 @@ function VocabCardCatalog({ session, isAdmin }) {
         .word-row {
           display: flex;
           align-items: baseline;
+          justify-content: center;
           gap: 12px;
           flex-wrap: wrap;
           margin-bottom: 4px;
@@ -2260,6 +2261,7 @@ function VocabCardCatalog({ session, isAdmin }) {
         .ipa-row {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 10px;
           margin: 8px 0 18px 0;
         }
@@ -2333,10 +2335,15 @@ function VocabCardCatalog({ session, isAdmin }) {
           color: #2a1c0e;
         }
 
-        .example-block { margin-top: 4px; }
+        .example-block {
+          margin-top: 4px;
+          width: 100%;
+          text-align: center;
+        }
         .example-en-row {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
+          justify-content: center;
           gap: 10px;
           margin-bottom: 8px;
         }
@@ -2807,7 +2814,7 @@ function VocabCardCatalog({ session, isAdmin }) {
                         </button>
                       </div>
                       {parseTags(selected.tags).length > 0 && (
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 6, marginBottom: 10 }}>
                           {parseTags(selected.tags).map((t) => (
                             <span
                               key={t}
@@ -3224,7 +3231,7 @@ function WordCardsPage({ config, session, isAdmin }) {
           flex-direction: column;
           justify-content: center;
         }
-        .flashcard-front { align-items: flex-start; }
+        .flashcard-front { align-items: center; text-align: center; }
         .flashcard-back {
           transform: rotateY(180deg);
           justify-content: flex-start;
@@ -3285,13 +3292,13 @@ function WordCardsPage({ config, session, isAdmin }) {
           transform: rotate(-14deg);
           color: rgba(196,134,15,0.85);
         }
-        .word-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+        .word-row { display: flex; align-items: baseline; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
         .word-display { font-family: 'Noto Sans JP', serif; font-weight: 700; font-size: 42px; color: #2a1c0e; line-height: 1; }
         .reading-tag {
           font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 500; color: #2f4f3e;
           background: #dbe6dc; border: 1px solid #9cb5a3; border-radius: 3px; padding: 3px 8px;
         }
-        .ipa-row { display: flex; align-items: center; gap: 10px; margin: 8px 0 18px 0; }
+        .ipa-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px 0 18px 0; }
         .speaker-btn {
           position: relative; display: inline-flex; align-items: center; justify-content: center;
           width: 34px; height: 34px; border-radius: 50%; background: #E3A72E; color: #fff8ec;
@@ -3313,8 +3320,18 @@ function WordCardsPage({ config, session, isAdmin }) {
           text-transform: uppercase; color: #8a6f45; margin: 0 0 6px 0;
         }
         .meaning-text { font-size: 22px; font-weight: 700; color: #2a1c0e; }
-        .example-block { margin-top: 4px; }
-        .example-en-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+        .example-block {
+          margin-top: 4px;
+          width: 100%;
+          text-align: center;
+        }
+        .example-en-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 8px;
+        }
         .example-en { font-family: 'Noto Sans JP', sans-serif; font-size: 16.5px; color: #2a2420; line-height: 1.6; }
         .example-ko { font-size: 14.5px; color: #5a4a34; line-height: 1.5; }
         .empty-state { text-align: center; padding: 60px 20px; color: #6b5638; }
