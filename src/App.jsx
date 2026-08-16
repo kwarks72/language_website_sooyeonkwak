@@ -3341,7 +3341,7 @@ function WordCardsPage({ config, session, isAdmin }) {
         @keyframes ripple { 0% { transform: scale(0.8); opacity: 0.9; } 100% { transform: scale(1.6); opacity: 0; } }
         .speaker-btn.small { width: 27px; height: 27px; }
         .divider-dashed { border: none; border-top: 1.5px dashed #b8a578; margin: 16px 0; }
-        .meaning-block { margin-bottom: 4px; }
+        .meaning-block { margin-bottom: 4px; width: 100%; text-align: center; align-self: center; }
         .section-label {
           font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.5px;
           text-transform: uppercase; color: #8a6f45; margin: 0 0 6px 0;
