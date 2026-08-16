@@ -64,10 +64,13 @@ const PAGE_PATHS = {
   search: "/search",
   vocab: "/vocab",
   enSentences: "/en-sentences",
+  enNotes: "/en-notes",
   jaWords: "/ja-words",
   jaSentences: "/ja-sentences",
+  jaNotes: "/ja-notes",
   esWords: "/es-words",
   esSentences: "/es-sentences",
+  esNotes: "/es-notes",
   admin: "/admin",
   privacy: "/privacy",
 };
@@ -77,10 +80,13 @@ const PAGE_TITLES = {
   search: "전체 검색 · 모두의 언어방",
   vocab: "낱말장 · 모두의 언어방",
   enSentences: "영어 문장 · 모두의 언어방",
+  enNotes: "영어 메모장 · 모두의 언어방",
   jaWords: "일본어 단어 · 모두의 언어방",
   jaSentences: "일본어 문장 · 모두의 언어방",
+  jaNotes: "일본어 메모장 · 모두의 언어방",
   esWords: "스페인어 단어 · 모두의 언어방",
   esSentences: "스페인어 문장 · 모두의 언어방",
+  esNotes: "스페인어 메모장 · 모두의 언어방",
   admin: "관리자 · 모두의 언어방",
   privacy: "개인정보처리방침 · 모두의 언어방",
 };
@@ -938,6 +944,7 @@ function NavBar({ page, setPage, session, isAdmin, onLoginClick, onSignupClick, 
       items: [
         { id: "vocab", label: "낱말장", icon: BookOpen },
         { id: "enSentences", label: "영어 문장", icon: Volume2 },
+        { id: "enNotes", label: "메모장", icon: Pencil },
       ],
     },
     {
@@ -946,6 +953,7 @@ function NavBar({ page, setPage, session, isAdmin, onLoginClick, onSignupClick, 
       items: [
         { id: "jaWords", label: "일본어 단어", icon: Sparkles },
         { id: "jaSentences", label: "일본어 문장", icon: Volume2 },
+        { id: "jaNotes", label: "메모장", icon: Pencil },
       ],
     },
     {
@@ -954,6 +962,7 @@ function NavBar({ page, setPage, session, isAdmin, onLoginClick, onSignupClick, 
       items: [
         { id: "esWords", label: "스페인어 단어", icon: Sparkles },
         { id: "esSentences", label: "스페인어 문장", icon: Volume2 },
+        { id: "esNotes", label: "메모장", icon: Pencil },
       ],
     },
   ];
@@ -1141,6 +1150,8 @@ const HOME_LANG_ROWS = [
         icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /> },
       { page: "enSentences", title: "영어 문장", num: "02",
         icon: <><path d="M11 5 6 9H2v6h4l5 4V5z" /><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> },
+      { page: "enNotes", title: "메모장", num: "03",
+        icon: <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /> },
     ],
   },
   {
@@ -1156,6 +1167,8 @@ const HOME_LANG_ROWS = [
         icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /> },
       { page: "jaSentences", title: "일본어 문장", num: "02",
         icon: <><path d="M11 5 6 9H2v6h4l5 4V5z" /><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> },
+      { page: "jaNotes", title: "메모장", num: "03",
+        icon: <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /> },
     ],
   },
   {
@@ -1171,6 +1184,8 @@ const HOME_LANG_ROWS = [
         icon: <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /> },
       { page: "esSentences", title: "스페인어 문장", num: "02",
         icon: <><path d="M11 5 6 9H2v6h4l5 4V5z" /><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> },
+      { page: "esNotes", title: "메모장", num: "03",
+        icon: <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /> },
     ],
   },
 ];
@@ -1231,8 +1246,8 @@ function Home({ setPage }) {
           font-size: 11px; color: var(--ink-faint); font-family: 'IBM Plex Mono', monospace;
           letter-spacing: 0.08em; text-transform: uppercase;
         }
-        .home-card-pair { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        @media (max-width: 560px) { .home-card-pair { grid-template-columns: 1fr; } }
+        .home-card-pair { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        @media (max-width: 680px) { .home-card-pair { grid-template-columns: 1fr; } }
         .home-card {
           background: rgba(255,255,255,0.03); border: 1px solid var(--card-border);
           border-radius: 12px; padding: 16px 18px; cursor: pointer; text-align: left;
@@ -2894,6 +2909,16 @@ function mapReadingWordRow(r) {
 
 const EMPTY_READING_WORD_FORM = { word: "", reading: "", meaning: "", example: "", example_ko: "" };
 const EMPTY_SENTENCE_FORM = { sentence: "", translation: "" };
+const EMPTY_NOTE_FORM = { title: "", content: "" };
+
+function mapNoteRow(r) {
+  return {
+    id: r.id,
+    title: r.title,
+    content: r.content,
+    created_at: r.created_at,
+  };
+}
 
 function WordCardsPage({ config, session, isAdmin }) {
   const {
@@ -2915,6 +2940,8 @@ function WordCardsPage({ config, session, isAdmin }) {
   const [savingEdit, setSavingEdit] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [showSlides, setShowSlides] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -3128,7 +3155,7 @@ function WordCardsPage({ config, session, isAdmin }) {
         .header-title { display: flex; align-items: center; gap: 10px; }
         .header-title h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; color: #2a1c0e; margin: 0; }
         .header-title p { margin: 2px 0 0 0; font-size: 12.5px; color: #4a3418; font-weight: 500; }
-        .search-wrap { position: relative; display: flex; align-items: center; gap: 8px; }
+        .search-wrap { position: relative; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .review-toggle {
           display: flex; align-items: center; gap: 6px;
           font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 600;
@@ -3380,6 +3407,24 @@ function WordCardsPage({ config, session, isAdmin }) {
             <Layers size={15} />
             오늘의 복습 (5개)
           </button>
+          <button
+            type="button"
+            className="review-toggle"
+            onClick={() => setShowQuiz(true)}
+            disabled={words.length < 4}
+          >
+            <Layers size={15} />
+            퀴즈 풀기
+          </button>
+          <button
+            type="button"
+            className="review-toggle"
+            onClick={() => setShowSlides(true)}
+            disabled={words.length === 0}
+          >
+            <Layers size={15} />
+            슬라이드로 보기
+          </button>
           <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
             <Search size={16} className="search-icon" />
             <input
@@ -3401,6 +3446,8 @@ function WordCardsPage({ config, session, isAdmin }) {
 
       {needsSetup && <SupabaseSetupNotice />}
 
+      {showQuiz && <QuizModal items={words} onClose={() => setShowQuiz(false)} />}
+
       {showReview && (
         <SlideshowModal
           title="오늘의 복습"
@@ -3413,6 +3460,35 @@ function WordCardsPage({ config, session, isAdmin }) {
                 <strong style={{ fontFamily: "'Noto Sans JP', serif", fontSize: 26, color: "#2a1c0e" }}>{w.word}</strong>
                 <button
                   className="speaker-btn"
+                  onClick={() => speak(w.word, w.id)}
+                  aria-label="발음 듣기"
+                  style={{ width: 30, height: 30 }}
+                >
+                  <Volume2 size={14} />
+                </button>
+              </div>
+              {w.reading && <span style={{ color: "#8a6f45", fontFamily: "'Noto Sans JP', sans-serif", fontSize: 13 }}>{w.reading}</span>}
+              <span style={{ color: "#5a4a34", fontSize: 15, fontWeight: 600 }}>{w.meaning}</span>
+              <span style={{ color: "#5a4a34", fontSize: 14, lineHeight: 1.6 }}>{w.example}</span>
+              {w.example_ko && <span style={{ color: "#8a7150", fontSize: 13 }}>{w.example_ko}</span>}
+            </>
+          )}
+        />
+      )}
+
+      {showSlides && (
+        <SlideshowModal
+          title={`${title} 슬라이드`}
+          items={words}
+          onClose={() => setShowSlides(false)}
+          onShow={(w, done) => speakWordThenExample(w.word, w.example, done)}
+          renderItem={(w) => (
+            <>
+              <span className="card-number">No. {String(words.findIndex((x) => x.id === w.id) + 1).padStart(3, "0")}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <strong style={{ fontFamily: "'Noto Sans JP', serif", fontSize: 26, color: "#2a1c0e" }}>{w.word}</strong>
+                <button
+                  className={`speaker-btn ${speakingId === w.id ? "playing" : ""}`}
                   onClick={() => speak(w.word, w.id)}
                   aria-label="발음 듣기"
                   style={{ width: 30, height: 30 }}
@@ -4012,6 +4088,368 @@ function SentencePracticePage({ config, session, isAdmin }) {
   );
 }
 
+function NotesPage({ config, session, isAdmin }) {
+  const { table, icon: Icon, title, subtitle, titlePh, contentPh } = config;
+
+  const [notes, setNotes] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [form, setForm] = useState(EMPTY_NOTE_FORM);
+  const [saveError, setSaveError] = useState(false);
+  const [needsSetup, setNeedsSetup] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState(EMPTY_NOTE_FORM);
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const rows = await supabaseRequest(table, { query: "?select=*&order=created_at.asc" });
+        if (!cancelled && Array.isArray(rows)) {
+          const mapped = rows.map(mapNoteRow);
+          setNotes(mapped);
+          if (mapped.length > 0) setSelectedId(mapped[0].id);
+        }
+      } catch (e) {
+        if (e.message === "SUPABASE_NOT_CONFIGURED") setNeedsSetup(true);
+      } finally {
+        if (!cancelled) setLoaded(true);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [table]);
+
+  const filtered = notes.filter((n) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return (n.title || "").toLowerCase().includes(q) || (n.content || "").toLowerCase().includes(q);
+  });
+
+  const selected = notes.find((n) => n.id === selectedId) || notes[0];
+  const selectedIndex = notes.findIndex((n) => n.id === selectedId);
+
+  const handleFormChange = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!form.title.trim() || !form.content.trim()) return;
+    try {
+      const rows = await supabaseRequest(table, {
+        method: "POST",
+        accessToken: session?.access_token,
+        body: { title: form.title, content: form.content },
+      });
+      const newNote = mapNoteRow(rows[0]);
+      setNotes((n) => [...n, newNote]);
+      setSelectedId(newNote.id);
+      setForm(EMPTY_NOTE_FORM);
+      setShowAddForm(false);
+      setSaveError(false);
+      setNeedsSetup(false);
+    } catch (e) {
+      if (e.message === "SUPABASE_NOT_CONFIGURED") setNeedsSetup(true);
+      else setSaveError(true);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("이 메모를 삭제할까요?")) return;
+    const prev = notes;
+    const remaining = notes.filter((n) => n.id !== id);
+    setNotes(remaining);
+    if (selectedId === id) setSelectedId(remaining.length > 0 ? remaining[0].id : null);
+    setIsEditing(false);
+    try {
+      await supabaseRequest(table, { method: "DELETE", query: `?id=eq.${id}`, accessToken: session?.access_token });
+    } catch (e) {
+      setNotes(prev);
+      setSaveError(true);
+    }
+  };
+
+  const startEditing = () => {
+    if (!selected) return;
+    setEditForm({ title: selected.title, content: selected.content });
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => setIsEditing(false);
+
+  const handleEditFormChange = (field) => (e) => setEditForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const saveEdit = async (e) => {
+    e.preventDefault();
+    if (!selected) return;
+    if (!editForm.title.trim() || !editForm.content.trim()) return;
+    setSavingEdit(true);
+    try {
+      const rows = await supabaseRequest(table, {
+        method: "PATCH",
+        query: `?id=eq.${selected.id}`,
+        accessToken: session?.access_token,
+        body: { title: editForm.title, content: editForm.content },
+      });
+      const updated = mapNoteRow(rows[0]);
+      setNotes((n) => n.map((x) => (x.id === updated.id ? updated : x)));
+      setIsEditing(false);
+      setSaveError(false);
+    } catch (e) {
+      if (e.message === "SUPABASE_NOT_CONFIGURED") setNeedsSetup(true);
+      else setSaveError(true);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  return (
+    <div className="shell">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        * { box-sizing: border-box; }
+        .shell {
+          min-height: 100vh;
+          background:
+            repeating-linear-gradient(100deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 5px),
+            linear-gradient(160deg, #FFFCF4 0%, #FFF8E8 55%, #FFFDF6 100%);
+          font-family: 'Noto Sans KR', sans-serif; color: #2a2420; padding: 20px;
+        }
+        .header-plaque.wide {
+          max-width: 980px; margin: 0 auto 18px auto; display: flex; align-items: center;
+          justify-content: space-between; gap: 16px; flex-wrap: wrap;
+          background: linear-gradient(180deg, #F0BC49, #E3A72E);
+          border: 1px solid #D9C79A; border-radius: 6px; padding: 14px 20px;
+          box-shadow: 0 3px 0 rgba(0,0,0,0.25), 0 8px 20px rgba(0,0,0,0.35);
+        }
+        .header-title { display: flex; align-items: center; gap: 10px; }
+        .header-title h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 26px; color: #2a1c0e; margin: 0; }
+        .header-title p { margin: 2px 0 0 0; font-size: 12.5px; color: #4a3418; font-weight: 500; }
+        .search-wrap { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .search-input {
+          font-family: 'Noto Sans KR', sans-serif; background: #f3e8cf; border: 1px solid #D9C79A;
+          border-radius: 5px; padding: 9px 12px 9px 34px; font-size: 14px; color: #2a2420;
+          width: 220px; outline: none;
+        }
+        .search-input:focus-visible { box-shadow: 0 0 0 3px rgba(227,167,46,0.6); }
+        .search-icon { position: absolute; left: 10px; color: #6b4a26; }
+        .main-grid { max-width: 980px; margin: 0 auto; display: flex; gap: 18px; align-items: flex-start; }
+        @media (max-width: 760px) { .main-grid { flex-direction: column; } }
+        .drawer {
+          flex: 0 0 240px; background: linear-gradient(180deg, #FDF8EC, #FDF8EC);
+          border: 1px solid #F0E6C8; border-radius: 8px; padding: 12px;
+          box-shadow: inset 0 0 0 1px rgba(227,167,46,0.06), 0 6px 16px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 760px) { .drawer { flex: 1 1 auto; width: 100%; } }
+        .drawer-label {
+          font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px;
+          text-transform: uppercase; color: #8a6f45; margin: 2px 4px 10px 4px;
+        }
+        .drawer-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 420px; overflow-y: auto; }
+        .drawer-item {
+          display: flex; align-items: center; justify-content: space-between; gap: 8px;
+          padding: 9px 12px; border-radius: 5px; background: rgba(227,167,46,0.06);
+          border: 1px solid transparent; cursor: pointer; color: #6b5638; font-size: 14px;
+        }
+        .drawer-item:hover { background: rgba(227,167,46,0.14); }
+        .drawer-item.active { background: #f0e6d2; color: #2a2420; border-color: #E3A72E; font-weight: 600; }
+        .drawer-item-text { display: flex; align-items: baseline; gap: 5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .drawer-item-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8a6f45; opacity: 0.7; flex-shrink: 0; }
+        .drawer-item.active .drawer-item-num { color: #8a6f45; }
+        .drawer-item:focus-visible { outline: 2px solid #e0b978; outline-offset: 2px; }
+        .add-toggle {
+          margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+          padding: 9px 10px; border-radius: 5px; border: 1px dashed #8a6f45; background: transparent;
+          color: #f0e0c2; font-size: 13px; cursor: pointer;
+        }
+        .add-toggle:hover { background: rgba(227,167,46,0.10); }
+        .card-area { flex: 1 1 auto; min-width: 0; }
+        .note-wrap {
+          position: relative; background: #FFFFFF; border-radius: 6px; padding: 26px 30px;
+          box-shadow: 0 2px 0 rgba(0,0,0,0.15), 0 14px 30px rgba(0,0,0,0.35);
+          border: 1px solid #F0E6C8;
+          background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(120,90,50,0.08) 28px);
+        }
+        .note-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+        .note-title { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; color: #2a1c0e; margin: 0; }
+        .note-top-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .edit-btn, .delete-word-btn { background: none; border: none; cursor: pointer; color: #6b5638; padding: 2px; }
+        .edit-btn:hover { color: #2a1c0e; }
+        .delete-word-btn { color: #C4860F; }
+        .delete-word-btn:hover { color: #7a3b2a; }
+        .edit-btn:focus-visible, .delete-word-btn:focus-visible { outline: 2px solid #E3A72E; outline-offset: 2px; }
+        .note-content {
+          font-family: 'Noto Sans KR', sans-serif; font-size: 15px; line-height: 1.85; color: #2a2420;
+          white-space: pre-wrap; word-break: break-word;
+        }
+        .card-number { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8a6f45; letter-spacing: 1px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #6b5638; }
+        .form-panel {
+          background: #f3e8cf; border: 1px solid #E3A72E; border-radius: 6px; padding: 16px 18px;
+          margin-top: 14px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .form-panel h3 { font-family: 'Fraunces', serif; margin: 0 0 4px 0; font-size: 17px; }
+        .form-panel input, .form-panel textarea {
+          font-family: 'Noto Sans KR', sans-serif; font-size: 13.5px; padding: 8px 10px; border-radius: 4px;
+          border: 1px solid #b8a578; background: #fffaf0; color: #2a2420; outline: none; width: 100%;
+        }
+        .form-panel input:focus-visible, .form-panel textarea:focus-visible { box-shadow: 0 0 0 3px rgba(227,167,46,0.4); }
+        .form-panel textarea { min-height: 160px; resize: vertical; font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace; line-height: 1.7; }
+        .form-submit {
+          align-self: flex-start; background: #2f4f3e; color: #f0e6d2; border: none;
+          padding: 9px 16px; border-radius: 5px; font-size: 13.5px; cursor: pointer;
+        }
+        .form-submit:hover { background: #24402f; }
+        .form-submit:disabled { opacity: 0.7; cursor: default; }
+        .form-cancel {
+          align-self: flex-start; background: transparent; color: #6b5638; border: 1px solid #b8a578;
+          padding: 9px 16px; border-radius: 5px; font-size: 13.5px; cursor: pointer;
+        }
+        .form-cancel:hover { background: rgba(0,0,0,0.04); }
+        .edit-actions { display: flex; gap: 8px; }
+      `}</style>
+
+      <div className="header-plaque wide">
+        <div className="header-title">
+          <Icon size={26} color="#2a1c0e" strokeWidth={2} />
+          <div>
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+          </div>
+        </div>
+        <div className="search-wrap">
+          <Search size={16} className="search-icon" />
+          <input
+            className="search-input"
+            type="text"
+            placeholder="제목 또는 내용 검색"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {!isAdmin && (
+        <p style={{ maxWidth: 980, margin: "0 auto 14px", fontSize: 12.5, color: "#8a6f45", textAlign: "center" }}>
+          이 메모는 운영자가 관리해요. 조회만 가능해요.
+        </p>
+      )}
+
+      {needsSetup && <SupabaseSetupNotice />}
+
+      <div className="main-grid">
+        <div className="drawer">
+          <div className="drawer-label">서랍 · {notes.length}개 메모</div>
+          <ul className="drawer-list">
+            {filtered.map((n, idx) => (
+              <li key={n.id}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className={`drawer-item ${n.id === selectedId ? "active" : ""}`}
+                  onClick={() => { setSelectedId(n.id); setIsEditing(false); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedId(n.id);
+                      setIsEditing(false);
+                    }
+                  }}
+                >
+                  <span className="drawer-item-text">
+                    <span className="drawer-item-num">{idx + 1}.</span>
+                    {n.title}
+                  </span>
+                </div>
+              </li>
+            ))}
+            {filtered.length === 0 && notes.length === 0 && (
+              <div style={{ color: "#e0c9a4", fontSize: 13, padding: "10px 6px" }}>
+                아직 작성된 메모가 없어요.
+                <br />
+                아래에서 첫 메모를 추가해보세요.
+              </div>
+            )}
+            {filtered.length === 0 && notes.length > 0 && (
+              <div style={{ color: "#e0c9a4", fontSize: 13, padding: "10px 6px" }}>검색 결과가 없습니다.</div>
+            )}
+          </ul>
+
+          {isAdmin && (
+            <button className="add-toggle" onClick={() => setShowAddForm((s) => !s)}>
+              {showAddForm ? <X size={15} /> : <Plus size={15} />}
+              {showAddForm ? "취소" : "새 메모 추가"}
+            </button>
+          )}
+
+          {isAdmin && showAddForm && (
+            <form className="form-panel" onSubmit={handleAdd}>
+              <h3>새 메모</h3>
+              <input placeholder={titlePh} value={form.title} onChange={handleFormChange("title")} required />
+              <textarea placeholder={contentPh} value={form.content} onChange={handleFormChange("content")} required />
+              <button type="submit" className="form-submit">메모 추가하기</button>
+            </form>
+          )}
+          <Toast message={saveError ? "저장에 실패했어요. 다시 시도해주세요." : null} kind="error" onDismiss={() => setSaveError(false)} />
+        </div>
+
+        <div className="card-area">
+          {!loaded ? (
+            <div className="empty-state">불러오는 중…</div>
+          ) : selected ? (
+            <div className="note-wrap">
+              <div className="note-top-row">
+                <div>
+                  <span className="card-number">No. {String(selectedIndex + 1).padStart(3, "0")}</span>
+                  {!isEditing && <h2 className="note-title" style={{ marginTop: 4 }}>{selected.title}</h2>}
+                </div>
+                {isAdmin && !isEditing && (
+                  <div className="note-top-actions">
+                    <button className="edit-btn" onClick={startEditing} aria-label="메모 수정">
+                      <Pencil size={16} />
+                    </button>
+                    <button className="delete-word-btn" onClick={() => handleDelete(selected.id)} aria-label="메모 삭제">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {isEditing ? (
+                <form className="form-panel" onSubmit={saveEdit}>
+                  <h3>메모 수정</h3>
+                  <input placeholder={titlePh} value={editForm.title} onChange={handleEditFormChange("title")} required />
+                  <textarea placeholder={contentPh} value={editForm.content} onChange={handleEditFormChange("content")} required />
+                  <div className="edit-actions">
+                    <button type="submit" className="form-submit" disabled={savingEdit}>
+                      {savingEdit ? "저장 중…" : "저장하기"}
+                    </button>
+                    <button type="button" className="form-cancel" onClick={cancelEditing}>취소</button>
+                  </div>
+                </form>
+              ) : (
+                <p className="note-content">{selected.content}</p>
+              )}
+            </div>
+          ) : notes.length === 0 ? (
+            <div className="empty-state">
+              <Pencil size={30} color="#6b5638" style={{ marginBottom: 10 }} />
+              <p style={{ margin: 0, fontSize: 15 }}>
+                아직 작성된 메모가 없어요.
+                <br />
+                왼쪽의 "새 메모 추가" 버튼으로 문법 정리를 시작해보세요.
+              </p>
+            </div>
+          ) : (
+            <div className="empty-state">왼쪽 서랍에서 메모를 선택하세요.</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EnglishSentencesPage({ session, isAdmin }) {
   return (
     <SentencePracticePage
@@ -4025,6 +4463,23 @@ function EnglishSentencesPage({ session, isAdmin }) {
         subtitle: "영어 문장 1줄과 번역으로 연습해요",
         sentencePh: "예: The weather is nice today.",
         translationPh: "예: 오늘 날씨가 좋네요.",
+      }}
+    />
+  );
+}
+
+function EnglishNotesPage({ session, isAdmin }) {
+  return (
+    <NotesPage
+      session={session}
+      isAdmin={isAdmin}
+      config={{
+        table: "english_notes",
+        icon: Pencil,
+        title: "영어 메모장",
+        subtitle: "문법과 표현을 자유롭게 정리해요",
+        titlePh: "제목 (예: 현재완료 vs 과거시제)",
+        contentPh: "내용을 자유롭게 정리해보세요.\n예)\n1. 현재완료: have/has + p.p. — 과거부터 지금까지 이어지는 일\n2. 과거시제: 이미 끝난 일, 특정 과거 시점\n예문: I have lived here for 5 years. / I lived there in 2020.",
       }}
     />
   );
@@ -4068,6 +4523,23 @@ function JapaneseSentencesPage({ session, isAdmin }) {
   );
 }
 
+function JapaneseNotesPage({ session, isAdmin }) {
+  return (
+    <NotesPage
+      session={session}
+      isAdmin={isAdmin}
+      config={{
+        table: "japanese_notes",
+        icon: Pencil,
+        title: "일본어 메모장",
+        subtitle: "문법과 표현을 자유롭게 정리해요",
+        titlePh: "제목 (예: て형 활용)",
+        contentPh: "내용을 자유롭게 정리해보세요.\n예)\n1グループ 동사: う단 → い단 + て (예: 買う→買って)\n2グループ 동사: る 빼고 + て (예: 食べる→食べて)\n3グループ(불규칙): する→して, 来る→来て",
+      }}
+    />
+  );
+}
+
 function SpanishWordsPage({ session, isAdmin }) {
   return (
     <WordCardsPage
@@ -4101,6 +4573,23 @@ function SpanishSentencesPage({ session, isAdmin }) {
         subtitle: "스페인어 문장 1줄과 번역으로 연습해요",
         sentencePh: "예: Hace buen tiempo hoy.",
         translationPh: "예: 오늘 날씨가 좋네요.",
+      }}
+    />
+  );
+}
+
+function SpanishNotesPage({ session, isAdmin }) {
+  return (
+    <NotesPage
+      session={session}
+      isAdmin={isAdmin}
+      config={{
+        table: "spanish_notes",
+        icon: Pencil,
+        title: "스페인어 메모장",
+        subtitle: "문법과 표현을 자유롭게 정리해요",
+        titlePh: "제목 (예: ser vs estar)",
+        contentPh: "내용을 자유롭게 정리해보세요.\n예)\n1. ser: 변하지 않는 특성, 정체성 (예: Soy coreano.)\n2. estar: 일시적 상태, 위치 (예: Estoy cansado.)",
       }}
     />
   );
@@ -4153,7 +4642,7 @@ export default function App() {
 
   const isAdmin = !!session?.user?.email && session.user.email === ADMIN_EMAIL;
 
-  const STUDY_PAGES = ["vocab", "enSentences", "jaWords", "jaSentences", "esWords", "esSentences"];
+  const STUDY_PAGES = ["vocab", "enSentences", "enNotes", "jaWords", "jaSentences", "jaNotes", "esWords", "esSentences", "esNotes"];
   useEffect(() => {
     if (STUDY_PAGES.includes(page)) logStudyVisit();
   }, [page]);
@@ -4201,10 +4690,13 @@ export default function App() {
       {page === "search" && <GlobalSearchPage setPage={setPage} />}
       {page === "vocab" && <VocabCardCatalog session={session} isAdmin={isAdmin} />}
       {page === "enSentences" && <EnglishSentencesPage session={session} isAdmin={isAdmin} />}
+      {page === "enNotes" && <EnglishNotesPage session={session} isAdmin={isAdmin} />}
       {page === "jaWords" && <JapaneseWordsPage session={session} isAdmin={isAdmin} />}
       {page === "jaSentences" && <JapaneseSentencesPage session={session} isAdmin={isAdmin} />}
+      {page === "jaNotes" && <JapaneseNotesPage session={session} isAdmin={isAdmin} />}
       {page === "esWords" && <SpanishWordsPage session={session} isAdmin={isAdmin} />}
       {page === "esSentences" && <SpanishSentencesPage session={session} isAdmin={isAdmin} />}
+      {page === "esNotes" && <SpanishNotesPage session={session} isAdmin={isAdmin} />}
       {page === "admin" && isAdmin && <AdminPage session={session} />}
       {page === "privacy" && <PrivacyPage setPage={setPage} />}
 
