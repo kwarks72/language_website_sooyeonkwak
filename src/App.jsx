@@ -4217,7 +4217,7 @@ function NotesPage({ config, session, isAdmin }) {
           font-family: 'Noto Sans KR', sans-serif; color: #2a2420; padding: 20px;
         }
         .header-plaque.wide {
-          max-width: 980px; margin: 0 auto 18px auto; display: flex; align-items: center;
+          max-width: 1200px; margin: 0 auto 18px auto; display: flex; align-items: center;
           justify-content: space-between; gap: 16px; flex-wrap: wrap;
           background: linear-gradient(180deg, #F0BC49, #E3A72E);
           border: 1px solid #D9C79A; border-radius: 6px; padding: 14px 20px;
@@ -4234,45 +4234,46 @@ function NotesPage({ config, session, isAdmin }) {
         }
         .search-input:focus-visible { box-shadow: 0 0 0 3px rgba(227,167,46,0.6); }
         .search-icon { position: absolute; left: 10px; color: #6b4a26; }
-        .main-grid { max-width: 980px; margin: 0 auto; display: flex; gap: 18px; align-items: flex-start; }
+        .main-grid { max-width: 1200px; margin: 0 auto; display: flex; gap: 18px; align-items: flex-start; }
         @media (max-width: 760px) { .main-grid { flex-direction: column; } }
         .drawer {
-          flex: 0 0 240px; background: linear-gradient(180deg, #FDF8EC, #FDF8EC);
-          border: 1px solid #F0E6C8; border-radius: 8px; padding: 12px;
+          flex: 0 0 190px; background: linear-gradient(180deg, #FDF8EC, #FDF8EC);
+          border: 1px solid #F0E6C8; border-radius: 8px; padding: 10px;
           box-shadow: inset 0 0 0 1px rgba(227,167,46,0.06), 0 6px 16px rgba(0,0,0,0.3);
         }
         @media (max-width: 760px) { .drawer { flex: 1 1 auto; width: 100%; } }
         .drawer-label {
-          font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px;
-          text-transform: uppercase; color: #8a6f45; margin: 2px 4px 10px 4px;
+          font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.5px;
+          text-transform: uppercase; color: #8a6f45; margin: 2px 4px 8px 4px;
         }
-        .drawer-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 420px; overflow-y: auto; }
+        .drawer-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 460px; overflow-y: auto; }
         .drawer-item {
           display: flex; align-items: center; justify-content: space-between; gap: 8px;
-          padding: 9px 12px; border-radius: 5px; background: rgba(227,167,46,0.06);
-          border: 1px solid transparent; cursor: pointer; color: #6b5638; font-size: 14px;
+          padding: 8px 10px; border-radius: 5px; background: rgba(227,167,46,0.06);
+          border: 1px solid transparent; cursor: pointer; color: #6b5638; font-size: 13px;
         }
         .drawer-item:hover { background: rgba(227,167,46,0.14); }
         .drawer-item.active { background: #f0e6d2; color: #2a2420; border-color: #E3A72E; font-weight: 600; }
         .drawer-item-text { display: flex; align-items: baseline; gap: 5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .drawer-item-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8a6f45; opacity: 0.7; flex-shrink: 0; }
+        .drawer-item-num { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #8a6f45; opacity: 0.7; flex-shrink: 0; }
         .drawer-item.active .drawer-item-num { color: #8a6f45; }
         .drawer-item:focus-visible { outline: 2px solid #e0b978; outline-offset: 2px; }
         .add-toggle {
-          margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
-          padding: 9px 10px; border-radius: 5px; border: 1px dashed #8a6f45; background: transparent;
-          color: #f0e0c2; font-size: 13px; cursor: pointer;
+          margin-top: 8px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px;
+          padding: 6px 8px; border-radius: 5px; border: 1px dashed #8a6f45; background: transparent;
+          color: #f0e0c2; font-size: 11.5px; cursor: pointer;
         }
         .add-toggle:hover { background: rgba(227,167,46,0.10); }
         .card-area { flex: 1 1 auto; min-width: 0; }
         .note-wrap {
-          position: relative; background: #FFFFFF; border-radius: 6px; padding: 26px 30px;
+          position: relative; background: #FFFFFF; border-radius: 6px; padding: 30px 36px;
+          min-height: 460px;
           box-shadow: 0 2px 0 rgba(0,0,0,0.15), 0 14px 30px rgba(0,0,0,0.35);
           border: 1px solid #F0E6C8;
           background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(120,90,50,0.08) 28px);
         }
         .note-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-        .note-title { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; color: #2a1c0e; margin: 0; }
+        .note-title { font-family: 'Fraunces', serif; font-weight: 700; font-size: 24px; color: #2a1c0e; margin: 0; }
         .note-top-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .edit-btn, .delete-word-btn { background: none; border: none; cursor: pointer; color: #6b5638; padding: 2px; }
         .edit-btn:hover { color: #2a1c0e; }
@@ -4280,7 +4281,7 @@ function NotesPage({ config, session, isAdmin }) {
         .delete-word-btn:hover { color: #7a3b2a; }
         .edit-btn:focus-visible, .delete-word-btn:focus-visible { outline: 2px solid #E3A72E; outline-offset: 2px; }
         .note-content {
-          font-family: 'Noto Sans KR', sans-serif; font-size: 15px; line-height: 1.85; color: #2a2420;
+          font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.95; color: #2a2420;
           white-space: pre-wrap; word-break: break-word;
         }
         .card-number { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8a6f45; letter-spacing: 1px; }
@@ -4331,7 +4332,7 @@ function NotesPage({ config, session, isAdmin }) {
       </div>
 
       {!isAdmin && (
-        <p style={{ maxWidth: 980, margin: "0 auto 14px", fontSize: 12.5, color: "#8a6f45", textAlign: "center" }}>
+        <p style={{ maxWidth: 1200, margin: "0 auto 14px", fontSize: 12.5, color: "#8a6f45", textAlign: "center" }}>
           이 메모는 운영자가 관리해요. 조회만 가능해요.
         </p>
       )}
@@ -4365,20 +4366,20 @@ function NotesPage({ config, session, isAdmin }) {
               </li>
             ))}
             {filtered.length === 0 && notes.length === 0 && (
-              <div style={{ color: "#e0c9a4", fontSize: 13, padding: "10px 6px" }}>
+              <div style={{ color: "#e0c9a4", fontSize: 12.5, padding: "10px 6px" }}>
                 아직 작성된 메모가 없어요.
                 <br />
                 아래에서 첫 메모를 추가해보세요.
               </div>
             )}
             {filtered.length === 0 && notes.length > 0 && (
-              <div style={{ color: "#e0c9a4", fontSize: 13, padding: "10px 6px" }}>검색 결과가 없습니다.</div>
+              <div style={{ color: "#e0c9a4", fontSize: 12.5, padding: "10px 6px" }}>검색 결과가 없습니다.</div>
             )}
           </ul>
 
           {isAdmin && (
             <button className="add-toggle" onClick={() => setShowAddForm((s) => !s)}>
-              {showAddForm ? <X size={15} /> : <Plus size={15} />}
+              {showAddForm ? <X size={13} /> : <Plus size={13} />}
               {showAddForm ? "취소" : "새 메모 추가"}
             </button>
           )}
